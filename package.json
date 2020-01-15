@@ -1,0 +1,16 @@
+{
+  "name": "espruino-cc1101-q7rf",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "gulp build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-string-replace": "^1.1.2",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "typescript": "^3.7.4"
+  }
+}
