@@ -3,14 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "gulp build"
+    "build": "gulp build",
+    "upload": "gulp upload"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "espruino": "^0.1.30",
     "gulp": "^4.0.2",
+    "gulp-better-rollup": "^4.0.1",
     "gulp-string-replace": "^1.1.2",
-    "gulp-typescript": "^6.0.0-alpha.1",
-    "typescript": "^3.7.4"
+    "rollup": "^1.29.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "rollup-plugin-uglify": "^6.0.4",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.4",
+    "uglify-js": "^3.7.5"
   }
 }

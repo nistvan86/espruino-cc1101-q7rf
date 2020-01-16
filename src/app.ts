@@ -1,3 +1,7 @@
-import wifi = require("Wifi");
+import * as Wifi from "Wifi";
 
-console.log(wifi.getIP());
+function main() {
+    console.log(Wifi.getIP());
+}
+
+E.on('init', main);
