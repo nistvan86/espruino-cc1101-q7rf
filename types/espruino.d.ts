@@ -4191,7 +4191,7 @@ declare function analogWrite(pin: Pin, value: number, options: any): void;
 * @param time
 * @url http://www.espruino.com/Reference#l__global_digitalPulse
 */
-declare function digitalPulse(pin: Pin, value: boolean, time: any): void;
+declare function digitalPulse(pin: Pin, value: number, time: any): void;
 
 /**
 * <p>Set the digital value of the given pin.</p>

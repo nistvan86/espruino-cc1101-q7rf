@@ -11,8 +11,8 @@ gulp.task('build', function (cb) {
     .src('./src/app.ts')
     .pipe(rollup({
       plugins: [
-        rollupTypescript(),
-        rollupUglify({ compress: true, mangle: { toplevel: true }, }, uglify)
+        rollupTypescript()/*,
+        rollupUglify({ compress: true, mangle: { toplevel: true }, }, uglify)*/
       ]
     }, { format: 'cjs', file: './built/app.js' }))
     .pipe(replace(/[\'\"]use strict[\'\"]\;\n*/, ''))
