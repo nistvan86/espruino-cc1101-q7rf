@@ -24,8 +24,8 @@ export class cc1101 {
 
   reset(cb: CallableFunction) {
     // CS wiggling to initiate manual reset (manual page 45)
-    digitalPulse(this.cs, 1, [0.03, 0.03, 0.045]);
-    digitalPulse(this.cs, 1, 0); // Wait for completion
+    digitalPulse(this.cs, true, [0.03, 0.03, 0.045]);
+    digitalPulse(this.cs, true, 0); // Wait for completion
 
     this.sendCmd(0x30, cb);
   }
