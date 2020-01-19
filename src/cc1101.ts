@@ -5,9 +5,6 @@ export class cc1101 {
   constructor(spi: SPI, cs: Pin) {
     this.spi = spi;
     this.cs = cs;
-
-    spi.setup({});
-    this.cs.mode('output');
   }
 
   private sendCmd(cmd: number, cb: CallableFunction) {
@@ -19,13 +16,14 @@ export class cc1101 {
   }
 
   readReg(reg: number): any {
-    return this.spi.send(reg, this.cs);
+    let result: Uint8Array = this.spi.send([reg, 0x00], this.cs);
+    if (result != undefined && result.length == 2) return result[1];
   }
 
   reset(cb: CallableFunction) {
     // CS wiggling to initiate manual reset (manual page 45)
-    digitalPulse(this.cs, true, [0.03, 0.03, 0.045]);
-    digitalPulse(this.cs, true, 0); // Wait for completion
+    digitalPulse(this.cs, true, [1, 1, 0.03, 0.03, 0.045]);
+    digitalPulse(this.cs, true, 0);
 
     this.sendCmd(0x30, cb);
   }

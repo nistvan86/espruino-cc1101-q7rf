@@ -1,9 +1,17 @@
 import { cc1101 } from './cc1101';
 
+const spi = SPI1;
+const csPin = NodeMCU.D8;
+
+let cc: cc1101;
+
 function main() {
-  let cc = new cc1101(SPI1, NodeMCU.D8);
-  cc.reset(function() {
-    console.log(cc.readReg(0xf1));
+  spi.setup({sck: NodeMCU.D5, miso: NodeMCU.D6, mosi: NodeMCU.D7});
+  csPin.mode('output');
+
+  cc = new cc1101(spi, csPin);
+  cc.reset(()=> {
+    console.log(cc.readReg(0xf1).toString(16));
   });
 }
 
