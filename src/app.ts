@@ -1,4 +1,4 @@
-import { cc1101 } from './cc1101';
+import { cc1101, StatusRegister } from './cc1101';
 
 const spi = SPI1;
 const csPin = NodeMCU.D8;
@@ -11,7 +11,7 @@ function main() {
 
   cc = new cc1101(spi, csPin);
   cc.reset(()=> {
-    console.log(cc.readReg(0xf1).toString(16));
+    console.log(cc.readStatusRegister(StatusRegister.VERSION).toString(16));
   });
 }
 
