@@ -1,3 +1,5 @@
+export type PATable = [number, number, number, number, number, number, number, number];
+
 export const CONFIG_REGISTERS = {
   IOCFG2: 0x00,
   IOCFG1: 0x01,
@@ -160,8 +162,7 @@ export class cc1101 {
     }
   }
 
-  // TODO: check for 8 byte long
-  writePATable(table: number[]) {
+  writePATable(table: PATable) {
     this.writeRegister(0x7e, new Uint8Array(table));
   }
 

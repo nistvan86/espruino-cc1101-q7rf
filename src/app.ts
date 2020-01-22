@@ -1,10 +1,13 @@
-import { cc1101, ConfigRegisterAssignment } from './cc1101';
+import { cc1101, ConfigRegisterAssignment, PATable } from './cc1101';
 
 const spi = SPI1;
 const csPin = NodeMCU.D8;
 
 let cc: cc1101;
 
+/* Each symbol takes 220us. Computherm/Delta Q7RF uses PWM modulation.
+   Each data bit is encoded as 3 bit inside the buffer.
+   001 = 1, 011 = 0, 111000111 = preamble (need to add manually, CC1101's sync word memory is only 8 bit long) */
 const Q7RF_REGISTER_SETTINGS: ConfigRegisterAssignment = {
   FIFOTHR: 0x00, // TX FIFO length on max (61) others defaults
   PKTLEN: 0x3d, // Max 61 byte packets
@@ -23,13 +26,56 @@ const Q7RF_REGISTER_SETTINGS: ConfigRegisterAssignment = {
   FREND0: 0x11 // ASK/OOK PATABLE (power level) settings = up to index 1, index[0] = transmitting 0 bit, index[1] = transmitting 1 bit
 };
 
-const THERMOSTAT_ON: Uint8Array = new Uint8Array([0xe3, 0xb6, 0xcb, 0x24, 0xb6, 0x4b, 0x64, 0x96, 0xd9, 0x24, 0x92, 0x4b, 0x6c, 0xb2, 0x4b, 0x64, 0xb6, 0x49, 0x6d, 0x92, 0x49, 0x24, 0x80,
-  0xe3, 0xb6, 0xcb, 0x24, 0xb6, 0x4b, 0x64, 0x96, 0xd9, 0x24, 0x92, 0x4b, 0x6c, 0xb2, 0x4b, 0x64, 0xb6, 0x49, 0x6d, 0x92, 0x49, 0x24, 0x80]);
+const Q7RF_PA_TABLE: PATable = [0x00, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]; // +12dB max power setting
 
-const THERMOSTAT_OFF: Uint8Array = new Uint8Array([0xe3, 0xb6, 0xcb, 0x24, 0xb6, 0x4b, 0x64, 0x96, 0xdb, 0x6d, 0x92, 0x4b, 0x6c, 0xb2, 0x4b, 0x64, 0xb6, 0x49, 0x6d, 0xb6, 0xd9, 0x24, 0x80,
-  0xe3, 0xb6, 0xcb, 0x24, 0xb6, 0x4b, 0x64, 0x96, 0xdb, 0x6d, 0x92, 0x4b, 0x6c, 0xb2, 0x4b, 0x64, 0xb6, 0x49, 0x6d, 0xb6, 0xd9, 0x24, 0x80]);
+const houseId: number = parseInt('0x6ed5', 16);
 
-const PA_TABLE = [0x00, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00] // +12dB max power setting
+function encodeBits(data: number, padToBits: number): string {
+  var result = [];
+  var binary = data.toString(2);
+
+  if (binary.length < padToBits) {
+    for (let p=0; p < padToBits - binary.length; p++) result.push('011');
+  }
+
+  for (let b=0; b<binary.length; b++) {
+    var digit = binary.charAt(b);
+    result.push(digit == '1' ? '001' : '011');
+  }
+  return result.join('');
+}
+
+const Q7RFCommands = {
+  heatingOn: 255,
+  heatingOff: 15,
+  pairing: 0
+}
+
+function getMessage(houseId: number, command: keyof typeof Q7RFCommands): number[] {
+  var result = ['111000111']; // preamble, 9 bits
+  var messagePart = [encodeBits(houseId, 16), encodeBits(8, 4), encodeBits(Q7RFCommands[command], 8)]; // 84 bits payload
+  result = result.concat(messagePart).concat(messagePart); // 9 + 168 = 177 bits
+  result.push('000'); // Total 180 bits
+
+  result = result.concat(result) // Send whole message twice, total 360 bits = 45 bytes
+  messagePart = undefined;
+
+  var binaryMessage = result.join('');
+  result = undefined;
+
+  var byteArray: number[] = [];
+  for (let b=0; b < 45; b++) {
+    const offset = b * 8;
+    const slice = binaryMessage.slice(offset, offset + 8);
+    byteArray.push(parseInt(slice, 2));
+  }
+  return byteArray;
+}
+
+// 46 bytes total
+const PAIRING: Uint8Array = new Uint8Array(getMessage(houseId, 'pairing'));
+const THERMOSTAT_ON: Uint8Array = new Uint8Array(getMessage(houseId, 'heatingOn'));
+const THERMOSTAT_OFF: Uint8Array = new Uint8Array(getMessage(houseId, 'heatingOff'));
 
 let heating: boolean = false;
 
@@ -50,10 +96,16 @@ function main() {
   cc = new cc1101(spi, csPin);
   cc.reset();
   cc.writeConfigRegisters(Q7RF_REGISTER_SETTINGS);
-  cc.writePATable(PA_TABLE);
+  cc.writePATable(Q7RF_PA_TABLE);
 
-  console.log(cc.getVersion());
-  timed();
+  console.log("Modem version: " + cc.getVersion());
+
+  cc.sendData(PAIRING);
+  console.log("Sent pairing code.");
+  setTimeout(()=> {
+    console.log("Starting toggler.");
+    timed();
+  }, 1000);
 }
 
 E.on('init', main);
