@@ -92,8 +92,6 @@ export class Q7RF {
 
     this.cc.writeConfigRegisters(Q7RF_REGISTER_SETTINGS);
     this.cc.writePATable(Q7RF_PA_TABLE);
-
-    this.tick();
   }
 
   private stopResendTimer() {
