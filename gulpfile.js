@@ -1,3 +1,5 @@
+var serialPort = '/dev/ttyUSB0';
+
 var gulp = require('gulp');
 var replace = require('gulp-string-replace');
 const { fork } = require('child_process');
@@ -25,7 +27,7 @@ gulp.task('upload', gulp.series(['build'], function (cb) {
     require.resolve('espruino/bin/espruino-cli'),
     ['--board', 'ESP8266_4MB',
       '-b', 115200,
-      '--port', '/dev/ttyUSB0',
+      '--port', serialPort,
       '--config', 'SAVE_ON_SEND=1',
       './built/app.js']
   );
