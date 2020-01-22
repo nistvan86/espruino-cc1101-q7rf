@@ -23,55 +23,13 @@ const Q7RF_REGISTER_SETTINGS: ConfigRegisterAssignment = {
 
 const Q7RF_PA_TABLE: PATable = [0x00, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]; // +12dB max power setting
 
-function encodeBits(data: number, padToBits: number): string {
-  var result = [];
-  var binary = data.toString(2);
-
-  if (binary.length < padToBits) {
-    for (let p=0; p < padToBits - binary.length; p++) result.push('011');
-  }
-
-  for (let b=0; b<binary.length; b++) {
-    var digit = binary.charAt(b);
-    result.push(digit == '1' ? '001' : '011');
-  }
-  return result.join('');
-}
-
-const Q7RFCommands = {
-  heatingOn: 255,
-  heatingOff: 15,
-  pairing: 0
-}
-
-function getMessage(thermostatAddr: number, command: keyof typeof Q7RFCommands): number[] {
-  var result = ['111000111']; // preamble, 9 bits
-  var messagePart = [encodeBits(thermostatAddr, 16), encodeBits(8, 4), encodeBits(Q7RFCommands[command], 8)]; // 84 bits payload
-  result = result.concat(messagePart).concat(messagePart); // 9 + 168 = 177 bits
-  result.push('000'); // Total 180 bits
-
-  result = result.concat(result) // Send whole message twice, total 360 bits = 45 bytes
-  messagePart = undefined;
-
-  var binaryMessage = result.join('');
-  result = undefined;
-
-  var byteArray: number[] = [];
-  for (let b=0; b < 45; b++) {
-    const offset = b * 8;
-    const slice = binaryMessage.slice(offset, offset + 8);
-    byteArray.push(parseInt(slice, 2));
-  }
-  return byteArray;
-}
-
 export class Q7RF {
 
-  private pairingCmd: Uint8Array;
   private resendDelay: number;
 
   private cc: CC1101;
 
+  private pairingCmd: Uint8Array;
   private turnOnHeatingCmd: Uint8Array;
   private turnOffHeatingCmd: Uint8Array;
 
@@ -79,9 +37,9 @@ export class Q7RF {
   private resendTimer: any = undefined;
 
   constructor(spi: SPI, cs: Pin, thermostatAddr: number, resendDelay: number = 30000) {
-    this.pairingCmd = new Uint8Array(getMessage(thermostatAddr, 'pairing'));
-    this.turnOnHeatingCmd = new Uint8Array(getMessage(thermostatAddr, 'heatingOn'));
-    this.turnOffHeatingCmd = new Uint8Array(getMessage(thermostatAddr, 'heatingOff'));
+    this.pairingCmd = new Uint8Array(Q7RF.getCommand(thermostatAddr, 0));
+    this.turnOnHeatingCmd = new Uint8Array(Q7RF.getCommand(thermostatAddr, 255));
+    this.turnOffHeatingCmd = new Uint8Array(Q7RF.getCommand(thermostatAddr, 15));
 
     this.resendDelay = resendDelay;
 
@@ -92,6 +50,43 @@ export class Q7RF {
 
     this.cc.writeConfigRegisters(Q7RF_REGISTER_SETTINGS);
     this.cc.writePATable(Q7RF_PA_TABLE);
+  }
+
+  private static encodeBits(byte: number, padToLength: number): string {
+    var result = [];
+    var binary = byte.toString(2);
+
+    if (binary.length < padToLength) {
+      for (let p=0; p < padToLength - binary.length; p++) result.push('011');
+    }
+
+    for (let b=0; b<binary.length; b++) {
+      var digit = binary.charAt(b);
+      result.push(digit == '1' ? '001' : '011');
+    }
+    return result.join('');
+  }
+
+  private static getCommand(thermostatAddr: number, command: number): number[] {
+    var builder = ['111000111']; // preamble
+    var messagePart = [Q7RF.encodeBits(thermostatAddr, 16), Q7RF.encodeBits(8, 4), Q7RF.encodeBits(command, 8)]; // payload
+    builder = builder.concat(messagePart).concat(messagePart); // repeat payload twice
+    messagePart = undefined;
+    builder.push('000'); // gap at the end
+
+    // send whole message twice
+    builder = builder.concat(builder);
+
+    var binaryMessage = builder.join('');
+    builder = undefined;
+
+    var byteArray: number[] = [];
+    for (let b=0; b < 45; b++) {
+      const offset = b * 8;
+      const slice = binaryMessage.slice(offset, offset + 8);
+      byteArray.push(parseInt(slice, 2));
+    }
+    return byteArray;
   }
 
   private stopResendTimer() {
