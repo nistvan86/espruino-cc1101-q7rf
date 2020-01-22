@@ -126,12 +126,10 @@ export class cc1101 {
     this.cs = cs;
   }
 
-  private sendCmd(cmd: number, callback: CallableFunction) {
+  private sendCmd(cmd: number) {
     this.cs.write(false);
     this.spi.write(cmd);
     this.cs.write(true);
-
-    setTimeout(callback, 0.3, []);
   }
 
   private readRegister(reg: number): number {
@@ -162,17 +160,40 @@ export class cc1101 {
     }
   }
 
-  reset(callback: CallableFunction) {
+  // TODO: check for 8 byte long
+  writePATable(table: number[]) {
+    this.writeRegister(0x7e, new Uint8Array(table));
+  }
+
+  reset() {
     // CS wiggling to initiate manual reset (manual page 45)
     // Note: the 1ms-1ms prepending is a "hack" to get around an issue with the ESP8266's
     // RTC timing limtation with the Espruino firmware, see https://github.com/espruino/Espruino/issues/1749
     digitalPulse(this.cs, true, [1, 1, 0.03, 0.03, 0.045]);
     digitalPulse(this.cs, true, 0);
 
-    this.sendCmd(0x30, () => {
-      this.writeConfigRegisters(DEFAULT_CONFIG_868MHZ);
-      callback();
-    });
+    this.sendCmd(0x30);
+    this.writeConfigRegisters(DEFAULT_CONFIG_868MHZ);
+  }
+
+  private setStateTx() {
+    this.sendCmd(0x35) // STX
+  }
+
+  private setStateIdle() {
+    this.sendCmd(0x36) // SIDLE
+  }
+
+  private flushRxFifo() {
+    this.sendCmd(0x3a) // SFRX
+  }
+
+  private flushTxFifo() {
+    this.sendCmd(0x3b) // SFTX
+  }
+
+  private getMarcState(): number {
+    return this.readStatusRegister('MARCSTATE') & 0x1f;
   }
 
   getVersion(): string {
@@ -181,6 +202,22 @@ export class cc1101 {
 
   getPartnum(): string {
     return this.readStatusRegister('PARTNUM').toString(16);
+  }
+
+  sendData(data: Uint8Array) {
+    this.setStateIdle();
+    this.flushRxFifo();
+    this.flushTxFifo();
+
+    this.writeRegister(0x7f, data);
+
+    this.setStateTx();
+
+    const state = this.getMarcState();
+    if (state != 0x13 && state != 0x14 && state != 0x15) { // not one of TX / TX_END / RXTX_SWITCH states
+      this.setStateIdle();
+      return;
+    }
   }
 
 }
