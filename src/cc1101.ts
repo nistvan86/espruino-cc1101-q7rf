@@ -119,7 +119,7 @@ export const DEFAULT_CONFIG_868MHZ: ConfigRegisterAssignment = {
   AGCTEST: 0x3f
 };
 
-export class cc1101 {
+export class CC1101 {
   spi: SPI;
   cs: Pin;
 
