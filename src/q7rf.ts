@@ -76,7 +76,7 @@ export class Q7RF {
   private turnOffHeatingCmd: Uint8Array;
 
   private heating: boolean = undefined;
-  private resendTimer: NodeJS.Timeout = undefined;
+  private resendTimer: any = undefined;
 
   constructor(spi: SPI, cs: Pin, thermostatAddr: number, resendDelay: number = 5000) {
     this.pairingCmd = new Uint8Array(getMessage(thermostatAddr, 'pairing'));
