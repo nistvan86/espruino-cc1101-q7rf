@@ -6,7 +6,7 @@
     "build": "gulp build",
     "upload": "gulp upload"
   },
-  "author": "",
+  "author": "István Nagy <nistvan.86@gmail.com> (https://github.com/nistvan86)",
   "license": "ISC",
   "devDependencies": {
     "espruino": "^0.1.30",

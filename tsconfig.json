@@ -8,6 +8,7 @@
     ],
     "noImplicitAny": true
   },
+  "types" : [], // Don't include @types/node by default
   "include": [
     "types/**/*.ts",
     "src/**/*.ts"
