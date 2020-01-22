@@ -2,9 +2,9 @@
 
 Use an ESP8266 and a TI CC1101 modem to control your Computherm/Delta Q7RF/Q8RF receiver equiped boiler.
 
-Work in progress to make this usable (MQTT, setup UI, etc.)
+Work in progress to make this more usable (MQTT, setup UI, etc.)
 
-The thermostat ID sent in messages can be configured inside `app.ts` for now. The device sends a pairing code after boot, so if you place your receiver into learning mode (hold down M/A button for 10 seconds), it will updates it's configuration with it, and other commands will work. (You can send your original wireless thermostat's ID by holding the Set + Day buttons on it for 10 seconds, if you wish to reset the original setup)
+The thermostat ID sent in messages can be configured inside `app.ts` for now. Once flashed, your device sends a pairing code after boot, so if you place your receiver into learning mode (hold down M/A button for 10 seconds), and reset your ESP8266, it will update it's configuration with the new ID, and other commands will work. (you can send your original wireless thermostat's ID by holding the Set + Day buttons on it for 10 seconds, if you wish to reset the original setup)
 
 The code now toggles the heating on/off every 5 seconds. So it's best to turn of your boiler manually before trying this out. This way you only see and hear the receiver switching states.
 
