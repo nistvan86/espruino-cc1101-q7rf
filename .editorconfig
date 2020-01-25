@@ -1,15 +1,13 @@
-[*.{js,ts,json}]
-indent_style = space
-indent_size = 2
+[*]
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 end_of_line = lf
 
-[*.{html,cxx}]
+[*.{js,ts,json}]
+indent_style = space
+indent_size = 2
+
+[*.{html,css}]
 indent_style = tab
 indent_size = 1
-charset = utf-8
-trim_trailing_whitespace = true
-insert_final_newline = true
-end_of_line = lf
