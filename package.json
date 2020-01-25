@@ -1,23 +1,15 @@
 {
-  "name": "espruino-cc1101-q7rf",
+  "name": "q7rf-mqtt",
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "gulp build",
-    "upload": "gulp upload"
+    "preinstall": "cd firmware; npm install; cd ../portal; npm install",
+    "build": "cd firmware; npm run build; cd ../portal; npm run build",
+    "flash": "espruino --no-ble --board ESP8266_4MB -b 115200 --port /dev/ttyUSB0 --config SAVE_ON_SEND=1 ./firmware/dist/app.js"
   },
   "author": "István Nagy <nistvan.86@gmail.com> (https://github.com/nistvan86)",
   "license": "ISC",
   "devDependencies": {
-    "espruino": "^0.1.30",
-    "gulp": "^4.0.2",
-    "gulp-better-rollup": "^4.0.1",
-    "gulp-string-replace": "^1.1.2",
-    "rollup": "^1.29.0",
-    "rollup-plugin-typescript": "^1.0.1",
-    "rollup-plugin-uglify": "^6.0.4",
-    "tslib": "^1.10.0",
-    "typescript": "^3.7.4",
-    "uglify-js": "^3.7.5"
+    "espruino": "^0.1.30"
   }
 }

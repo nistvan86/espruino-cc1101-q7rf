@@ -1,0 +1,16 @@
+{
+  "name": "q7rf-mqtt-firmware",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "author": "István Nagy <nistvan.86@gmail.com> (https://github.com/nistvan86)",
+  "license": "ISC",
+  "devDependencies": {
+    "rollup": "^1.29.0",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.4"
+  }
+}
