@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "target": "ES5",
+    "module": "es6",
+    "outDir": "./built",
+    "rootDir": "./src",
+    "strict": true,
+    "noImplicitAny": true,
+    "alwaysStrict": true,
+    "moduleResolution": "node"
+  }
+}

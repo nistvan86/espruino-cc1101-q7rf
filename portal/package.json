@@ -1,0 +1,22 @@
+{
+  "name": "portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "scripts": {
+    "build": "rollup -c",
+    "serve": "serve dist"
+  },
+  "devDependencies": {
+    "cash-dom": "^6.0.1",
+    "rollup": "^1.29.1",
+    "rollup-plugin-generate-html": "^0.2.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "serve": "^11.3.0"
+  }
+}
