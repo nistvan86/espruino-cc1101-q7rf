@@ -5,12 +5,11 @@
   "scripts": {
     "preinstall": "cd firmware; npm install; cd ../portal; npm install",
     "build": "cd firmware; npm run build; cd ../portal; npm run build",
-    "flash": "npm run build && espruino --no-ble -b 115200 --port /dev/ttyUSB0 --config SAVE_ON_SEND=1 ./firmware/dist/app.js"
+    "flash": "npm run build && node bundler.js && espruino --no-ble -b 115200 --port /dev/ttyUSB0 ./dist/firmware.js"
   },
   "author": "István Nagy <nistvan.86@gmail.com> (https://github.com/nistvan86)",
   "license": "ISC",
   "devDependencies": {
-    "espruino": "^0.1.30",
-    "stream-replace": "^1.0.0"
+    "espruino": "^0.1.30"
   }
 }
