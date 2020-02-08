@@ -44,12 +44,22 @@ export class Q7RF {
     this.resendDelay = resendDelay;
 
     this.cc = new CC1101(spi, cs);
+  }
+
+  setup(): boolean {
     this.cc.reset();
 
-    console.log("Initialised CC1101 modem with version: " + this.cc.getVersion() + " partnum: " + this.cc.getPartnum());
+    const ver = this.cc.getVersion();
+    const partnum = this.cc.getPartnum();
+    if (ver != '14' || partnum != '0') {
+      console.log("Failed to initialize CC1101 modem");
+      return false;
+    }
 
     this.cc.writeConfigRegisters(Q7RF_REGISTER_SETTINGS);
     this.cc.writePATable(Q7RF_PA_TABLE);
+
+    return true;
   }
 
   private static encodeBits(byte: number, padToLength: number): string {
@@ -94,7 +104,8 @@ export class Q7RF {
   }
 
   private setupResendTimer() {
-    this.resendTimer = setTimeout(this.tick, this.resendDelay);
+    const self = this;
+    this.resendTimer = setTimeout(() => { self.tick(); }, this.resendDelay);
   }
 
   private tick() {

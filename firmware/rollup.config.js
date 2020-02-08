@@ -11,5 +11,6 @@ export default {
   plugins: [
     typescript(),
     terser()
-  ]
+  ],
+  external: [ 'Wifi', 'tinyMQTT' ]
 }

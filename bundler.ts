@@ -1,13 +1,13 @@
 const distDir = './dist/';
 
-const bootScript = './firmware/dist/app.js';
-const assets = [
-  {name: 'index', path: './portal/dist/index.html'}
+const storageAssets = [
+  {name: '.boot0', path: './config.js'},
+  {name: '.bootcde', path: './firmware/dist/app.js'},
+  {name: 'tinyMQTT', path: './firmware/modules/tinyMQTT.min.js'}
 ];
 
 // ----
-
-var fs = require('fs');
+import * as fs from 'fs';
 
 function ensureDistDir() {
   if (!fs.existsSync(distDir)){
@@ -15,20 +15,24 @@ function ensureDistDir() {
   }
 }
 
-async function pasteFile(ws, file) {
+interface AssetFile {
+  name: string
+  path: string
+}
+
+async function pasteFile(ws: fs.WriteStream, file: AssetFile) {
   await new Promise((resolve, reject) => {
     var name = file.name;
     var path = file.path;
-    var binary = file.binary === true;
 
     var offset = 0;
     var length = fs.statSync(path)['size'];
 
     ws.write('console.log("Sending ' + name + '..");\n');
-    var stream = fs.createReadStream(path, {highWaterMark: binary ? 64 : 256});
+    var stream = fs.createReadStream(path, {highWaterMark: 256});
     stream.on('data', (chunk) => {
       ws.write('s.write("' + name + '", ');
-      ws.write(binary ? '[' + chunk.join(',') + ']' : JSON.stringify(chunk.toString('utf-8')));
+      ws.write(JSON.stringify(chunk.toString('utf-8')));
       ws.write(', ' + offset);
       ws.write(offset == 0 ? ', ' + length : '');
       ws.write(');\n');
@@ -39,7 +43,7 @@ async function pasteFile(ws, file) {
   });
 }
 
-async function pasteFiles(ws, files) {
+async function pasteFiles(ws: fs.WriteStream, files: AssetFile[]) {
   for (const file of files) {
     await pasteFile(ws, file);
   }
@@ -52,8 +56,7 @@ async function createFirmwareBundle() {
   ws.write('var s = require("Storage");\n');
   ws.write('console.log("Erasing storage..");\n');
   ws.write('s.eraseAll();\n');
-  await pasteFile(ws, {path: bootScript, name: '.boot1'});
-  await pasteFiles(ws, assets);
+  await pasteFiles(ws, storageAssets);
   ws.write('E.reboot();\n');
   ws.end();
 }
