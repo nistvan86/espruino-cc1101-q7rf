@@ -8,7 +8,7 @@ Use a NodeMCU (ESP8266) and a TI CC1101 modem to control your Computherm/Delta Q
 
 You need Espruino firmware version 2v04.76 or later. Get it from www.espruino.com and flash accordingly. A 4MB Flash equiped NodeMCU is required. If you use other boards, you might need to change the different pin settings in `app.ts`.
 
-You need a CC1101 chip which is tuned to 868 MHz. The chip on it's own can be configured for many targets, but the antenna design on the board needs to be tuned for the specific frequency in mind. I've used an extremely cheap $2 module from AliExpress which needed some cables and the antenna to be soldered.
+You need a CC1101 module which is tuned to 868 MHz. The chip on it's own can be configured for many targets, but the antenna design on the board needs to be tuned for the specific frequency in mind. I've used an extremely cheap $2 module from AliExpress which needed some cables and the antenna to be soldered.
 
 CC1101 chip needs to be connected to the standard SPI pins of ESP8266 (secondary SPI PINs, the first set is used by the flash RAM module).
 
