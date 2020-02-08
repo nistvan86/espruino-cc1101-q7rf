@@ -45,6 +45,8 @@ Device will subscribe to the specified MQTT topic (`q7rf/heating` by default) an
 * `ON` - turn the heating on
 * `OFF` - turn the heating off
 
+Since the protocol used is simplex, it's necessary to repeat the last command now and then so the receiver gets in sync in case a transmission error occurs. By default the last command is resent every 30 seconds. This interval can be altered in the config file.
+
 ## Pairing with the receiver
 
 Once the device settled you need to pair your device to the existing Computherm receiver. Press and hold the M/A button on the receiver until it starts flashing green. Now press the "Flash" button on your NodeMCU module. The receiver should stop blinking. The pairing is now completed.
