@@ -31,7 +31,7 @@ Connections:
 
 In the project's directory create a copy of `config.template.js` as `config.js` and fill the necessary parameters.
 
-Use `npm install` to get dependencies for this repository and then issue `npm run flash` to flash to the device. Probably you need to change the serial port used, this can be done in the `package.json` file, in the `flash` scripts's espruino command line arguments (default is `/dev/ttyUSB0` but you can use Windows style `COM1` as well).
+Use `npm install` to get dependencies for this repository and then issue `npm run flash` to flash to the device. Probably you need to change the serial port used, this can be done in the `package.json` file, by the `flash` scripts's espruino command line arguments (default is `/dev/ttyUSB0` but you can use Windows style `COM1` as well).
 
 Once flashed the device reboots and starts running the code. You can check the status over the USB serial connection (eg. using PuTTY or miniterm to connect to the serial port of the device, baud rate is 115200), but in case you don't have access to that, the NodeMCU's on board LED signals the different states:
 * Slow blink (1 sec on-off): the device is initializing. If this takes too long probably you have a bad connection to the CC1101.
