@@ -49,7 +49,7 @@ function setupRadio(): boolean {
     return false;
   }
 
-  console.log("Q7RF radio interface ready.");
+  console.log('Q7RF radio interface ready.');
 
   // Setup pairing button PIN
   pairingButtonBin.mode(pairingButtonPinMode);
@@ -76,21 +76,21 @@ function setupMQTT() {
   queue = mqtt.create(config.mqtt.host, {username: config.mqtt.username, password: config.mqtt.password, port: config.mqtt.port});
 
   queue.on('connected', () => {
-    console.log("Connected to MQTT.");
+    console.log('Connected to MQTT.');
     led.stopBlinking();
 
     queue.subscribe(config.mqtt.topic);
   });
 
   queue.on('disconnected', () => {
-    console.log("MQTT disconnected, reconnecting in 10 second.");
+    console.log('MQTT disconnected, reconnecting in 10 second.');
     led.startBlinking(queueDisconnectBlinking);
     setTimeout(() => { queue.connect(); }, 10000);
   });
 
   queue.on('message', (msg: mqtt.Message) => {
     if (msg.topic == config.mqtt.topic) {
-      console.log("MQTT message received: " + msg.message);
+      console.log('MQTT message received: ' + msg.message);
       if (msg.message == 'ON') {
         q7rf.turnOnHeating();
       } else if (msg.message == 'OFF') {
