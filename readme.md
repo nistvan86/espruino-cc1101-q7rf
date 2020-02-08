@@ -2,7 +2,7 @@
 
 Use a NodeMCU (ESP8266) and a TI CC1101 modem to control your Computherm/Delta Q7RF/Q8RF receiver equiped boiler via MQTT.
 
-**Use this project at your own risk. I'm not responsible for any damage done by it. I haven't done any extensive testing with it. Bugs can cause unwanted behaviour and/or even damage your heating equipment. Please be careful with testing. Reporting and/or fixing issues is always welcome.**
+**Use this project at your own risk. I'm not responsible for any damage done. I haven't done any extensive testing with it. Bugs can cause unwanted behaviour and/or even damage your heating equipment, cause high heating bill, etc. Please be careful with testing. Reporting and/or fixing issues is always welcome.**
 
 ## Hardware
 
