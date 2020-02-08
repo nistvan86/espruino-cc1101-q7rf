@@ -2,6 +2,8 @@
 
 Use a NodeMCU (ESP8266) and a TI CC1101 modem to control your Computherm/Delta Q7RF/Q8RF receiver equiped boiler.
 
+**Use this project at your own risk. I'm not responsible for any damage done by it. I haven't done any extensive testing with it. Bugs can cause unwanted behaviour and/or even damage your heating equipment. Please be careful with testing. Reporting and/or fixing issues is always welcome.**
+
 ## Hardware
 
 You need Espruino firmware version 2v04.76 or later. Get it from www.espruino.com and flash accordingly. A 4MB Flash equiped NodeMCU is required. If you use other boards, you might need to change the different pin settings in `app.ts`.
