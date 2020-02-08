@@ -51,7 +51,7 @@ Once the device settled you need to pair your device to the existing Computherm 
 
 If you wish to reset and use your original wireless thermostat, once again set the receiver into learning mode with the M/A button, then hold the SET + DAY button on your wireless thermostat until the blinking stops. The receiver only listens to the device currently paired.
 
-In case you are operating multiple devices in the vicinity, you need to change the deviceId used inside the config.js file. This is a 16 bit value, so it's always 4 hexa characters long.
+In case you are operating multiple devices in the vicinity, you need to change the deviceId used inside the `config.js` file. This is a 16 bit value, so it's always 4 hexa characters long.
 
 ## Research sources
 
