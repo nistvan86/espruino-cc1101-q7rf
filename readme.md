@@ -24,7 +24,7 @@ Connections:
     GND                   GND
     D7 (GPIO13/HMOSI)     MOSI
     D5 (GPIO14/HSCLK)     SCLK
-    D6 (GPIO12/HISO)      MISO
+    D6 (GPIO12/HMISO)     MISO
     D8 (GPIO15/HCS)       CSN
 
 ## Setup and flash
