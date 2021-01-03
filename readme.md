@@ -1,3 +1,8 @@
+# Deprecated
+This project is now deprecated and not maintained. If you are looking for a more practical use, please checkout the ESPHome custom component version: https://github.com/nistvan86/q7rf-esphome
+
+----
+
 # espruino-cc1101-q7rf
 
 Use a NodeMCU (ESP8266) and a TI CC1101 modem to control your Computherm/Delta Q7RF/Q8RF receiver equiped boiler via MQTT.
