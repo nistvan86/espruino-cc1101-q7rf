@@ -1,5 +1,5 @@
 # Deprecated
-This project is now deprecated and not maintained. If you are looking for a more practical use, please checkout the ESPHome custom component version: https://github.com/nistvan86/q7rf-esphome
+This project is now deprecated and not maintained. It is superseded by the ESPHome custom component: https://github.com/nistvan86/q7rf-esphome
 
 ----
 
